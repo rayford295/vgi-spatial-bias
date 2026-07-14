@@ -31,6 +31,21 @@ key engineered feature.
 DGCNN's dynamic k-NN graph gives each point **local geometric context**, sharpening
 building edges and improving every vegetation class over the per-point PointNet.
 
+## VGI comparison (in progress)
+
+The end goal is **detecting & correcting spatial bias in VGI (OpenStreetMap) using remote
+sensing**: LiDAR building footprints are the objective ground truth, matched against OSM
+`building=*` to reveal where OSM under-maps. `src/vgi_comparison.py` implements the
+IoU matching → completeness → gridded bias-map pipeline:
+
+```bash
+python src/vgi_comparison.py osm_buildings_2019.geojson   # 2019 = temporally matched to LiDAR
+```
+
+The committed run in `outputs/comparison/` is a **pipeline test against a LiDAR-derived
+reference** (cross-method check, 99.8% agreement) — see that folder's README. The real
+OSM comparison, over an urban→rural gradient where bias actually varies, is the next step.
+
 ## Data
 
 - **Source:** USGS 3DEP Lidar Point Cloud, `IL_8County_PlusChampaign_2019_B19` (QL1), 4 × 1 km tiles.
@@ -67,6 +82,7 @@ src/
   classical_detection.py           ground/DTM + building & tree instances
   pointnet_semseg.py               PointNet semantic segmentation (baseline)
   dgcnn_semseg.py                  DGCNN (EdgeConv) semantic segmentation + full-tile map
+  vgi_comparison.py                LiDAR-vs-reference building IoU matching + completeness map
 metadata/
   georeference.txt  encoding.txt  footprint.geojson    CRS / bbox / ASPRS codes (GIS · OSM)
 outputs/
@@ -77,6 +93,7 @@ outputs/
     detection_summary.json
   segmentation/                    deep-learning segmentation results
     dl_*  (PointNet)   seg_*  (DGCNN)                   figures · metrics · weights
+  comparison/                      VGI-vs-LiDAR building comparison (+ README caveats)
 requirements.txt   LICENSE
 ```
 Large / regenerable artifacts (`*.laz`, `outputs/**/*.tif`, feature cache) are gitignored —
