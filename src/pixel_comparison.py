@@ -86,6 +86,27 @@ ax.legend(handles=[Patch(color=CMAP(i), label=LABELS[i]) for i in range(4)],
 ax.ticklabel_format(style="plain"); fig.tight_layout()
 fig.savefig(os.path.join(OUT, f"pixel_diff_{tag}.png")); plt.close(fig)
 
+# disagreement-only map (agreement shown faint for context)
+s = max(1, nx // 1500)
+ny2, nx2 = (ny // s) * s, (nx // s) * s
+def pool(mask):                                      # block-max: keep thin edges visible
+    return mask[:ny2, :nx2].reshape(ny2//s, s, nx2//s, s).max(axis=(1, 3))
+ag = pool(cat == 1); lo_ = pool(cat == 2); ro_ = pool(cat == 3)
+rgb = np.ones((*ag.shape, 3), np.float32)            # white background
+rgb[ag]  = [0.86, 0.86, 0.86]                        # agreed building (context)
+rgb[ro_] = [0.23, 0.43, 0.69]                        # reference-only
+rgb[lo_] = [0.82, 0.28, 0.25]                        # LiDAR-only  (painted last = wins)
+fig, ax = plt.subplots(figsize=(11, 11), dpi=140)
+ax.imshow(rgb, extent=[xmin, xmax, ymin, ymax], origin="upper", interpolation="nearest")
+ax.set_title(f"Disagreement pixels only @ {RES:g} m  "
+             f"(grey = agreed building; disagree {metrics['disagreement_m2']:,.0f} m²)")
+ax.legend(handles=[Patch(color="#d1483f", label=f"LiDAR-only  {metrics['lidar_only_m2']:,.0f} m²"),
+                   Patch(color="#3b6fb0", label=f"reference-only  {metrics['reference_only_m2']:,.0f} m²"),
+                   Patch(color="#dbdbdb", label="agreed building")],
+          loc="lower center", ncol=3, fontsize=9)
+ax.ticklabel_format(style="plain"); fig.tight_layout()
+fig.savefig(os.path.join(OUT, f"pixel_disagreement_{tag}.png")); plt.close(fig)
+
 # zoom crop (120 m window) at true resolution
 cxr, cyr = 656100, 1926100; half = 60
 c0 = int((cxr - half - xmin) / RES); c1 = int((cxr + half - xmin) / RES)
