@@ -1,0 +1,16 @@
+# Large / regenerable data — the notebook downloads the .laz from I-GUIDE and
+# recreates these rasters/caches on run, so they don't belong in git.
+*.laz
+*.las
+*.zip
+results/*.tif
+results/dl_cache.npz
+
+# macOS / editor junk
+.DS_Store
+__MACOSX/
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc

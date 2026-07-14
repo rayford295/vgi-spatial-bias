@@ -1,0 +1,36 @@
+UIUC CAMPUS MERGED LiDAR — ENCODING / CLASSIFICATION SHEET
+==========================================================
+File          : UIUC_campus_LiDAR_merged_2x2km.laz
+Total points  : 80,849,096
+LAS version   : 1.4   Point Data Record Format: 6
+Scales (XYZ)  : [np.float64(0.01), np.float64(0.01), np.float64(0.01)]  Offsets: [np.float64(-0.0), np.float64(-0.0), np.float64(-0.0)]
+Field names   : X, Y, Z, intensity, return_number, number_of_returns, synthetic, key_point, withheld, overlap, scanner_channel, scan_direction_flag, edge_of_flight_line, classification, user_data, scan_angle, point_source_id, gps_time
+
+CLASSIFICATION (ASPRS codes present)  — key filter field for OSM:
+  code  ASPRS class                          points     share
+     1  Unclassified                     24,687,241    30.53%
+     2  Ground                           21,716,942    26.86%
+     3  Low Vegetation                    1,058,886     1.31%
+     4  Medium Vegetation                 4,144,121     5.13%
+     5  High Vegetation                  13,612,184    16.84%
+     6  Building                         15,530,725    19.21%
+     7  Low Point (noise)                    89,577     0.11%
+    17  Bridge Deck                           2,995     0.00%
+    18  High Noise                            6,425     0.01%
+
+RETURN STRUCTURE (multi-return = canopy penetration available):
+  return_number:      1:64,393,483  2:11,863,021  3:3,890,116  4:656,070  5:44,951  6:1,296  7:159
+  number_of_returns:  1:52,531,077  2:15,944,434  3:9,702,139  4:2,445,042  5:218,479  6:7,112  7:813
+
+CLASSIFICATION FLAGS (bit flags, may overlap):
+  synthetic : 0  (0.00%)
+  key_point : 0  (0.00%)
+  withheld  : 0  (0.00%)
+  overlap   : 26,340,335  (32.58%)
+
+OSM FILTERING CHEAT-SHEET (PDAL expression on classification):
+  Buildings : classification == 6     -> roof/wall footprints -> OSM building=*
+  Ground    : classification == 2     -> bare-earth DTM / alignment
+  Roads     : classification == 11    -> road surface (if populated)
+  Water     : classification == 9     -> natural=water / riverbank
+  Trees     : classification 3,4,5    -> natural=tree / landuse

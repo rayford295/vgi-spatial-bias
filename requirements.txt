@@ -1,0 +1,10 @@
+laspy[lazrs]
+numpy
+scipy
+scikit-image
+scikit-learn
+shapely
+rasterio
+pyproj
+matplotlib
+torch
