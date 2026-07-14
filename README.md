@@ -83,6 +83,8 @@ src/
   pointnet_semseg.py               PointNet semantic segmentation (baseline)
   dgcnn_semseg.py                  DGCNN (EdgeConv) semantic segmentation + full-tile map
   vgi_comparison.py                LiDAR-vs-reference building IoU matching + completeness map
+  pixel_comparison.py              per-pixel building agreement (0.1/0.2 m) + disagreement map
+  naip_segmentation.py             NAIP land cover + building (LiDAR-fused) + paved/road
 metadata/
   georeference.txt  encoding.txt  footprint.geojson    CRS / bbox / ASPRS codes (GIS · OSM)
 outputs/
@@ -94,6 +96,7 @@ outputs/
   segmentation/                    deep-learning segmentation results
     dl_*  (PointNet)   seg_*  (DGCNN)                   figures · metrics · weights
   comparison/                      VGI-vs-LiDAR building comparison (+ README caveats)
+  naip/                            NAIP land-cover / building / paved segmentation
 requirements.txt   LICENSE
 ```
 Large / regenerable artifacts (`*.laz`, `outputs/**/*.tif`, feature cache) are gitignored —

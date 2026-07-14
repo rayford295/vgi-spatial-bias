@@ -21,8 +21,15 @@ both remote sensors agree, which makes the OSM gap defensible.
 ## Feature × source matrix (not every feature comes from every source)
 | Feature | OSM | LiDAR | NAIP | Comparison |
 |---------|-----|-------|------|------------|
-| **Buildings** | ✅ | ✅ (DGCNN) | ✅ (harder in top-down RGB) | 3-way; LiDAR primary, NAIP corroborates |
-| **Roads** | ✅ | ✖ (no road class) | ✅ | **OSM vs NAIP** (LiDAR DTM only a weak cue) |
+| **Buildings** | ✅ | ✅ (DGCNN) | ✅ *via LiDAR fusion* | 3-way; LiDAR primary, NAIP corroborates (97.8% of LiDAR building area is NAIP-impervious) |
+| **Roads** | ✅ | ✖ (no road class) | ✅ (paved = impervious − buildings) | **OSM vs NAIP** (LiDAR DTM only a weak cue) |
+
+**NAIP note:** optical imagery has no height, so buildings and roads are spectrally
+identical and impervious pixels form one connected blob — NAIP *alone* cannot separate
+them. We fuse: NDVI/ExG → vegetation; the built-up impervious extent is NAIP-only
+(independent); LiDAR footprints resolve buildings; `paved = impervious − buildings` gives
+road/parking/sidewalk surface (a superset of roads — centrelines come from OSM-vs-NAIP).
+NAIP is not trained on LiDAR, so its impervious extent stays an independent signal.
 
 ## Pipeline
 1. **Extract** features from each source (LiDAR → DGCNN; OSM → vector tags; NAIP → segmentation).
@@ -50,7 +57,7 @@ via a stratified transect for the actual bias analysis.
 | LiDAR → DGCNN semantic segmentation | ✅ done (val OA 0.93, mIoU 0.77) |
 | LiDAR building footprints → rasterize → pixel comparison (0.1/0.2 m) | ✅ done |
 | OSM feature extraction (buildings, roads) | ⏳ pending real OSM-2019 |
-| NAIP object detection / segmentation | ⬜ not started |
-| 3-way RS-consensus vs OSM comparison | ◐ 2-way pipeline built; awaiting OSM + NAIP |
+| NAIP land cover + building (LiDAR-fused) + paved(road/parking) | ✅ done (`src/naip_segmentation.py`) |
+| 3-way RS-consensus vs OSM comparison | ◐ 2-way pipeline built; awaiting real OSM-2019 |
 
 See [`src/`](src) for code and [`outputs/`](outputs/README.md) for results.
