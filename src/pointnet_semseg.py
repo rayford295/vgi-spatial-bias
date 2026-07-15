@@ -5,7 +5,7 @@ Model  : block-wise PointNet (PyTorch, runs on Apple-Silicon MPS).
 Split  : spatial -- west half (x<656000) TRAIN, east half VAL (no leakage).
 Classes: 0 Ground(2) 1 LowVeg(3) 2 MedVeg(4) 3 HighVeg(5) 4 Building(6)
 
-Outputs (outputs/segmentation/):
+Outputs (results/segmentation/):
   dl_cache.npz            cached preprocessed points/features
   dl_metrics.json         overall accuracy, mean IoU, per-class IoU
   dl_confusion.png        confusion matrix
@@ -20,9 +20,9 @@ from matplotlib.colors import ListedColormap
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "UIUC_campus_LiDAR_merged_2x2km.laz")
-OUT = os.path.join(ROOT, "outputs", "segmentation"); os.makedirs(OUT, exist_ok=True)
+OUT = os.path.join(ROOT, "results", "segmentation"); os.makedirs(OUT, exist_ok=True)
 CACHE = os.path.join(OUT, "dl_cache.npz")
-DTM_TIF = os.path.join(ROOT, "outputs", "detection", "dtm.tif")  # from classical_detection.py
+DTM_TIF = os.path.join(ROOT, "results", "detection", "dtm.tif")  # from classical_detection.py
 RES = 0.5; BLOCK = 40.0; NPTS = 4096
 CLASS_MAP = {2:0, 3:1, 4:2, 5:3, 6:4}
 NAMES = ["Ground", "Low Veg", "Med Veg", "High Veg", "Building"]

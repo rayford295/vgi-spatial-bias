@@ -49,7 +49,7 @@ quality across diverse geographic contexts.
 - VGI maps — [OpenStreetMap](https://www.openstreetmap.org)
   - 2019 Illinois statewide extracts (buildings + roads) are archived under this repo's
     [`osm-il-2019` release](https://github.com/rayford295/vgi-spatial-bias/releases/tag/osm-il-2019);
-    campus-extent subsets are committed at the repo root
+    campus-extent subsets are committed in `data/`
     (`osm_buildings_2019.geojson`, `osm_roads_2019.geojson`)
 - Census data — [American Community Survey (ACS)](https://www.census.gov/programs-surveys/acs.html)
 

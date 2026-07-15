@@ -3,8 +3,8 @@
 *.laz
 *.las
 *.zip
-outputs/**/*.tif
-outputs/**/*.npz
+results/**/*.tif
+results/**/*.npz
 
 # macOS / editor junk
 .DS_Store

@@ -29,8 +29,8 @@ from matplotlib.colors import ListedColormap
 from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "outputs", "naip"); os.makedirs(OUT, exist_ok=True)
-LIDAR_BLDG = os.path.join(ROOT, "outputs", "detection", "buildings.geojson")
+OUT = os.path.join(ROOT, "results", "naip"); os.makedirs(OUT, exist_ok=True)
+LIDAR_BLDG = os.path.join(ROOT, "results", "detection", "buildings.geojson")
 if len(sys.argv) < 2 or not os.path.exists(sys.argv[1]):
     sys.exit("usage: python src/naip_segmentation.py <NAIP_image.tif>")
 NAIP = sys.argv[1]

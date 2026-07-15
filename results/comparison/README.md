@@ -39,7 +39,7 @@ footprints would require re-detecting from points at ~0.2 m, not resampling.
 
 ## For the actual study
 1. Supply **OSM `building=*` polygons** as the reference:
-   `python src/vgi_comparison.py osm_buildings_2019.geojson`
+   `python src/vgi_comparison.py data/osm_buildings_2019.geojson`
    — use the **2019** snapshot (temporally matched to the LiDAR), not 2026.
 2. This 2×2 km campus tile is ~fully mapped in OSM, so completeness will sit near 100%
    here regardless. The **spatial-bias signal** only emerges over an urban→rural gradient;

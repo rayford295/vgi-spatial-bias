@@ -21,8 +21,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "outputs", "comparison"); os.makedirs(OUT, exist_ok=True)
-LIDAR = os.path.join(ROOT, "outputs", "detection", "buildings.geojson")
+OUT = os.path.join(ROOT, "results", "comparison"); os.makedirs(OUT, exist_ok=True)
+LIDAR = os.path.join(ROOT, "results", "detection", "buildings.geojson")
 REF = sys.argv[1] if len(sys.argv) > 1 else None
 if not REF or not os.path.exists(REF):
     sys.exit("usage: python src/vgi_comparison.py <reference_buildings.shp|.geojson>\n"
