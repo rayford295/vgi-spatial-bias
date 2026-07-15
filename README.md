@@ -1,9 +1,16 @@
-# UIUC Campus LiDAR — Detection & Segmentation
+# Detecting and Correcting Spatial Bias in VGI Using Remote Sensing
 
-End-to-end, reproducible LiDAR analysis of the University of Illinois Urbana-Champaign
-campus: a merged 2 × 2 km USGS 3DEP QL1 point cloud (80.8 M points) processed into
-**building instances**, **individual trees**, a **bare-earth terrain model**, and a
-**deep-learning semantic segmentation** of the ASPRS classes.
+Volunteered Geographic Information (VGI) such as OpenStreetMap is highly accurate in
+well-mapped urban areas but incomplete in data-sparse regions. This project evaluates and
+calibrates VGI using multimodal remote sensing — see
+[`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md) for the research questions and
+[`METHODOLOGY.md`](METHODOLOGY.md) for the OSM × LiDAR × NAIP comparison design.
+
+The remote-sensing reference is built from an end-to-end, reproducible LiDAR analysis of
+the University of Illinois Urbana-Champaign campus: a merged 2 × 2 km USGS 3DEP QL1 point
+cloud (80.8 M points) processed into **building instances**, **individual trees**, a
+**bare-earth terrain model**, and a **deep-learning semantic segmentation** of the ASPRS
+classes.
 
 The [notebook](UIUC_campus_LiDAR_pipeline.ipynb) is fully self-contained — it downloads
 the point cloud from I-GUIDE storage and runs everything top to bottom.
@@ -51,7 +58,7 @@ campus-extent subsets are committed at the repo root — `osm_buildings_2019.geo
 (1,121 buildings vs 1,312 LiDAR-detected instances) and `osm_roads_2019.geojson`
 (3,614 segments) — and the full Illinois statewide shapefiles (1.20 M buildings,
 765 K roads) are archived as
-[release `osm-il-2019`](https://github.com/rayford295/uiuc-campus-lidar/releases/tag/osm-il-2019)
+[release `osm-il-2019`](https://github.com/rayford295/vgi-spatial-bias/releases/tag/osm-il-2019)
 for scaling the analysis across the urban→rural gradient. The broader research framing
 (evaluating & calibrating VGI with multimodal remote sensing) is in
 [`PROJECT_DESCRIPTION.md`](PROJECT_DESCRIPTION.md).
@@ -65,7 +72,7 @@ for scaling the analysis across the urban→rural gradient. The broader research
 - **OSM 2019 (VGI layer):** Illinois statewide shapefile extracts, WGS84 —
   1,197,659 building polygons and 765,328 road lines with `osm_id`, `lastchange`,
   `fclass`, and county-join attributes. Too large for git (zips 138/108 MB), so they live
-  as assets on [release `osm-il-2019`](https://github.com/rayford295/uiuc-campus-lidar/releases/tag/osm-il-2019).
+  as assets on [release `osm-il-2019`](https://github.com/rayford295/vgi-spatial-bias/releases/tag/osm-il-2019).
   Campus-bbox subsets (`osm_buildings_2019.geojson`, `osm_roads_2019.geojson`) are
   committed at the repo root and feed `src/vgi_comparison.py` directly.
 

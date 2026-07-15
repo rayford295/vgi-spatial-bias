@@ -48,7 +48,7 @@ quality across diverse geographic contexts.
 - Landsat remote sensing — [USGS Earth Explorer](https://earthexplorer.usgs.gov/)
 - VGI maps — [OpenStreetMap](https://www.openstreetmap.org)
   - 2019 Illinois statewide extracts (buildings + roads) are archived under this repo's
-    [`osm-il-2019` release](https://github.com/rayford295/uiuc-campus-lidar/releases/tag/osm-il-2019);
+    [`osm-il-2019` release](https://github.com/rayford295/vgi-spatial-bias/releases/tag/osm-il-2019);
     campus-extent subsets are committed at the repo root
     (`osm_buildings_2019.geojson`, `osm_roads_2019.geojson`)
 - Census data — [American Community Survey (ACS)](https://www.census.gov/programs-surveys/acs.html)
