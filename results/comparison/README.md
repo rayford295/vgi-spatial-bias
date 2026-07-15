@@ -68,6 +68,32 @@ per-pixel agreement category (both / LiDAR-only / OSM-only / neither) →
 residential strip (solid red = entire missing houses), disagreement is mostly a thin
 edge fringe plus scattered whole small structures.
 
+## Roads: OSM vs NAIP paved surface (`roads/`, `src/road_comparison.py`)
+
+LiDAR has no road class, so roads are evaluated against the **NAIP paved layer**
+(impervious − buildings). Forward test: buffer each OSM way by a class-dependent width
+(+1.5 m positional tolerance) and measure the paved fraction inside ("RS support",
+threshold 0.5). Reverse test: fraction of paved area within any buffered OSM way.
+
+| OSM snapshot | ways (in tile) | length | supported (length) | median support | paved explained |
+|---|---|---|---|---|---|
+| 2019 | 3,383 | 246 km | **91.1%** | 0.83 | 54.9% |
+| 2026 | 5,402 | 267 km | 90.8% | 0.89 | 58.6% |
+
+Findings (`roads_2019.png`, `roads_2026.png`):
+
+1. **Roads were already well-mapped in 2019** — 91% of OSM way length has pavement
+   evidence, unlike buildings (58%). Campus road/footway networks attract early mapping.
+2. **2026 growth is micro-mapping, not new coverage**: +60% segments but only +8%
+   length (crossings, sidewalk links, driveways split into short ways), median support
+   rising 0.83 → 0.89 (better geometric alignment).
+3. **Unexplained paved (~41–45%) is dominated by parking lots and plazas** — consistent
+   with `paved` being a superset of roads; these are area features OSM maps sparsely as
+   `amenity=parking`, not missing centrelines.
+4. **Caveats**: optical NAIP cannot see pavement under tree canopy, so shaded residential
+   streets/footways (eastern strip) read as "unsupported" — a false alarm LiDAR does not
+   suffer from; and unpaved `path`/`track` ways legitimately lack pavement support.
+
 ## Pipeline validation (previous run, kept for the record)
 
 Before the OSM run, the same pipeline was validated against an independent LiDAR-derived
