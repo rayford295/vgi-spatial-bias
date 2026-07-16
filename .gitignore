@@ -5,6 +5,9 @@
 *.zip
 results/**/*.tif
 results/**/*.npz
+data/NAIP_image.tif
+data/lidar_tiles/
+data/statewide/
 
 # macOS / editor junk
 .DS_Store

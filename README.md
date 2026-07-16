@@ -93,23 +93,30 @@ Statewide OSM extracts (1.20 M buildings, 765 K roads) are on the
 
 ```bash
 pip install -r requirements.txt
-jupyter lab UIUC_campus_LiDAR_pipeline.ipynb        # self-contained: downloads the cloud, runs all
+jupyter lab VGI_Spatial_Bias_Pipeline.ipynb   # end-to-end: downloads all data, runs every stage
 ```
 
-Or run the scripts directly (in order — later ones reuse the DTM and feature cache):
+The notebook covers the **entire pipeline** (LiDAR detection → DGCNN segmentation →
+NAIP → buildings/roads VGI comparison → statewide bias) with a documented, explained
+step per stage, and runs unmodified on the I-GUIDE JupyterHub. Or run the scripts
+directly (in order — later ones reuse earlier outputs):
 
 ```bash
+python src/prepare_data.py           # fetch LiDAR + NAIP + statewide inputs (idempotent)
 python src/classical_detection.py    # ground/DTM, buildings, trees   -> results/detection/
 python src/dgcnn_semseg.py           # semantic segmentation          -> results/segmentation/
+python src/naip_segmentation.py data/NAIP_image.tif            # land cover -> results/naip/
 python src/vgi_comparison.py data/osm_buildings_2019.geojson   # bias map -> results/comparison/
+python src/statewide_bias.py data/statewide/OSM_2019_Major_Roads/gis_osm_roads_2019_IL_Major_Roads.shp \
+       data/statewide results/statewide                        # county gradient
 ```
 
-Device auto-selects CUDA → Apple MPS → CPU; a full run takes ≈ 10–15 min.
+Device auto-selects CUDA → Apple MPS → CPU; a full campus run takes ≈ 10–15 min.
 
 ## Repository layout
 
 ```
-UIUC_campus_LiDAR_pipeline.ipynb   end-to-end reproducible notebook
+VGI_Spatial_Bias_Pipeline.ipynb    end-to-end reproducible notebook (all stages, I-GUIDE-ready)
 src/                               pipeline scripts (detection, segmentation, comparison, NAIP, statewide)
 data/                              OSM 2019 campus subsets + CRS/bbox metadata
 docs/                              PROJECT_DESCRIPTION · METHODOLOGY · METRICS

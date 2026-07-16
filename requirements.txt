@@ -1,6 +1,9 @@
 laspy[lazrs]
 numpy
 scipy
+pandas
+geopandas
+pyogrio
 scikit-image
 scikit-learn
 shapely
