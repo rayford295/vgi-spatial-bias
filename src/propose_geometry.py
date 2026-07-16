@@ -31,7 +31,7 @@ from shapely import affinity
 from shapely.geometry import Polygon
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "correction")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "correction")
 os.makedirs(OUT, exist_ok=True)
 CRS, IOU_THR = 6350, 0.3
 SPLIT_X = 656000.0          # tile midline: west = train, east = eval (same as DGCNN)
@@ -107,13 +107,13 @@ def best_match(gaps, ref):
 
 
 def main():
-    gaps = gpd.read_file(os.path.join(ROOT, "results", "comparison",
+    gaps = gpd.read_file(os.path.join(ROOT, "results", "uiuc_campus", "comparison",
                                       "omissions.geojson")).to_crs(CRS)
     gaps["geometry"] = gaps.geometry.buffer(0)
     gaps = gaps.reset_index(drop=True)
     gaps["gap_id"] = gaps.index
 
-    o26 = gpd.read_file(os.path.join(ROOT, "data",
+    o26 = gpd.read_file(os.path.join(ROOT, "data", "uiuc_campus",
                                      "osm_buildings_2026.geojson")).to_crs(CRS)
     o26["geometry"] = o26.geometry.buffer(0)
     o26 = o26[o26.area >= 5.0].reset_index(drop=True)

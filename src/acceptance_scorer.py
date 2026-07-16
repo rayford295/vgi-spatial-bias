@@ -34,7 +34,7 @@ from sklearn.metrics import roc_auc_score
 from propose_geometry import best_match
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "correction")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "correction")
 CRS, NEIGH_M, TOP_K = 6350, 100.0, 50
 
 
@@ -65,12 +65,12 @@ def raster_fraction(src, band, geoms):
 
 def build_features(gaps):
     # NAIP impervious = building OR paved (both binary rasters from stage 3)
-    with rasterio.open(os.path.join(ROOT, "results", "naip", "naip_building.tif")) as b, \
-         rasterio.open(os.path.join(ROOT, "results", "naip", "naip_paved.tif")) as p:
+    with rasterio.open(os.path.join(ROOT, "results", "uiuc_campus", "naip", "naip_building.tif")) as b, \
+         rasterio.open(os.path.join(ROOT, "results", "uiuc_campus", "naip", "naip_paved.tif")) as p:
         imperv = ((b.read(1) > 0) | (p.read(1) > 0)).astype("uint8")
         gaps["imperv_frac"] = raster_fraction(b, imperv, gaps.geometry)
 
-    roads = gpd.read_file(os.path.join(ROOT, "data",
+    roads = gpd.read_file(os.path.join(ROOT, "data", "uiuc_campus",
                                        "osm_roads_2019.geojson")).to_crs(CRS)
     try:
         _, dist = roads.sindex.nearest(gaps.geometry, return_distance=True,
@@ -82,10 +82,10 @@ def build_features(gaps):
 
     # neighborhood completeness: share of LiDAR buildings within 100 m that
     # OSM had mapped in 2019 (contributor attention around the gap)
-    lid = gpd.read_file(os.path.join(ROOT, "results", "detection",
+    lid = gpd.read_file(os.path.join(ROOT, "results", "uiuc_campus", "detection",
                                      "buildings.geojson")).to_crs(CRS)
     lid["geometry"] = lid.geometry.buffer(0)
-    o19 = gpd.read_file(os.path.join(ROOT, "data",
+    o19 = gpd.read_file(os.path.join(ROOT, "data", "uiuc_campus",
                                      "osm_buildings_2019.geojson")).to_crs(CRS)
     o19["geometry"] = o19.geometry.buffer(0)
     o19 = o19[o19.area >= 5.0].reset_index(drop=True)

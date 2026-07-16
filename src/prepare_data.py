@@ -22,7 +22,7 @@ from urllib.request import urlretrieve
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
-STATEWIDE = os.path.join(DATA, "statewide")
+STATEWIDE = os.path.join(DATA, "statewide_il")
 
 RELEASE = "https://github.com/rayford295/vgi-spatial-bias/releases/download"
 URLS = {
@@ -37,11 +37,11 @@ URLS = {
 URLS["cs_lidar"] = f"{RELEASE}/colorado-springs-2019/cs_lidar_2km.laz"
 URLS["cs_naip"] = f"{RELEASE}/colorado-springs-2019/colorado_springs_NAIP_clipped_6350.tif"
 
-LAZ = os.path.join(ROOT, "UIUC_campus_LiDAR_merged_2x2km.laz")
-NAIP = os.path.join(DATA, "NAIP_image.tif")
+LAZ = os.path.join(ROOT, "data", "uiuc_campus", "UIUC_campus_LiDAR_merged_2x2km.laz")
+NAIP = os.path.join(DATA, "uiuc_campus", "NAIP_image.tif")
 ROADS_SHP = os.path.join(STATEWIDE, "OSM_2019_Major_Roads",
                          "gis_osm_roads_2019_IL_Major_Roads.shp")
-CS_DATA = os.path.join(ROOT, "regions", "colorado_springs", "data")
+CS_DATA = os.path.join(ROOT, "data", "colorado_springs")
 
 
 def fetch(url, dest):
@@ -66,7 +66,7 @@ def prepare_lidar():
 
     import laspy
 
-    workdir = os.path.join(ROOT, "data", "lidar_tiles")
+    workdir = os.path.join(ROOT, "data", "uiuc_campus", "lidar_tiles")
     z = fetch(URLS["lidar"], os.path.join(workdir, "uiuc_campus_lidar.zip"))
     with zipfile.ZipFile(z) as zf:
         zf.extractall(workdir)

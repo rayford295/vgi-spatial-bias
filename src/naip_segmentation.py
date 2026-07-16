@@ -34,8 +34,8 @@ if len(sys.argv) < 2 or not os.path.exists(sys.argv[1]):
              "[lidar_buildings.geojson] [out_dir]")
 NAIP = sys.argv[1]
 LIDAR_BLDG = sys.argv[2] if len(sys.argv) > 2 else os.path.join(
-    ROOT, "results", "detection", "buildings.geojson")
-OUT = sys.argv[3] if len(sys.argv) > 3 else os.path.join(ROOT, "results", "naip")
+    ROOT, "results", "uiuc_campus", "detection", "buildings.geojson")
+OUT = sys.argv[3] if len(sys.argv) > 3 else os.path.join(ROOT, "results", "uiuc_campus", "naip")
 os.makedirs(OUT, exist_ok=True)
 if len(sys.argv) > 2:      # region mode: the raster is already clipped to the tile
     with rasterio.open(NAIP) as _ds:

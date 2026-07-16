@@ -25,8 +25,8 @@ from shapely.geometry import shape, mapping
 from shapely.ops import transform as shp_transform
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, "UIUC_campus_LiDAR_merged_2x2km.laz")
-OUT = os.path.join(ROOT, "results", "detection"); os.makedirs(OUT, exist_ok=True)
+SRC = os.path.join(ROOT, "data", "uiuc_campus", "UIUC_campus_LiDAR_merged_2x2km.laz")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "detection"); os.makedirs(OUT, exist_ok=True)
 RES = 0.5  # metres / cell
 
 h = laspy.open(SRC).header

@@ -26,13 +26,13 @@ import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "correction")
+OUT = os.path.join(ROOT, "results", "statewide_il")
 os.makedirs(OUT, exist_ok=True)
 SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
 
 
 def main():
-    df = pd.read_csv(os.path.join(ROOT, "results", "statewide",
+    df = pd.read_csv(os.path.join(ROOT, "results", "statewide_il",
                                   "county_metrics.csv"),
                      dtype={"GEOID": str})
     df["staleness"] = 1 - df.pct_recent / 100
@@ -48,7 +48,7 @@ def main():
     json.dump(dict(top10=top10), open(os.path.join(OUT,
               "deploy_priority_top10.json"), "w"), indent=2, default=str)
 
-    shp = gpd.read_file(os.path.join(ROOT, "data", "statewide", "cb_county",
+    shp = gpd.read_file(os.path.join(ROOT, "data", "statewide_il", "cb_county",
                                      "cb_2019_us_county_20m.shp"))
     il = shp[shp.STATEFP == "17"].merge(df, on="GEOID").to_crs(26971)
     fig, ax = plt.subplots(figsize=(8.5, 10))

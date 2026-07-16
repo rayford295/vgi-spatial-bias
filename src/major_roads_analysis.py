@@ -22,7 +22,7 @@ import pandas as pd
 
 from road_comparison import OUT, ROOT, analyse
 
-CLIP = os.path.join(ROOT, "data", "osm_roads_2019_major.geojson")
+CLIP = os.path.join(ROOT, "data", "uiuc_campus", "osm_roads_2019_major.geojson")
 
 # statewide county means for context (results/statewide/county_metrics.csv)
 STATEWIDE = {"pct_maxspeed": 1.44, "pct_surface": 1.72, "pct_name": 73.9}

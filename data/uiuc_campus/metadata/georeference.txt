@@ -1,0 +1,35 @@
+UIUC CAMPUS MERGED LiDAR — GEOREFERENCE / EXTENT SHEET
+==========================================================
+File          : UIUC_campus_LiDAR_merged_2x2km.laz
+Points        : 80,849,096
+Source        : USGS 3DEP LPC IL_8County_PlusChampaign_2019_B19 (QL1)
+Tiles merged  : w6550n1925 w6550n1926 w6560n1925 w6560n1926 (2x2 km)
+
+HORIZONTAL CRS (data as stored)
+  NAD83(2011) / Conus Albers, meters   ->  EPSG:6350
+VERTICAL CRS
+  NAVD88 height (Geoid12B), meters     ->  EPSG:5703
+OSM works in WGS84 lon/lat             ->  EPSG:4326
+
+EXTENT in native Albers meters (EPSG:6350):
+  X (easting) : 655000.00  ..  656999.99   (2000 m)
+  Y (northing): 1925000.00  ..  1926999.99   (2000 m)
+
+EXTENT in WGS84 lon/lat (EPSG:4326):
+  min_lon=-88.2402753  min_lat=40.0990944
+  max_lon=-88.2147506  max_lat=40.1183436
+  center  lon=-88.2275144  lat=40.1087194
+
+OSM bbox string (left,bottom,right,top = min_lon,min_lat,max_lon,max_lat):
+  -88.2402753,40.0990944,-88.2147506,40.1183436
+openstreetmap.org view:
+  https://www.openstreetmap.org/?minlon=-88.240275&minlat=40.099094&maxlon=-88.214751&maxlat=40.118344&box=yes
+
+CORNERS (exact footprint, Albers grid is slightly rotated vs lon/lat):
+  SW (655000, 1925000)      lon=-88.2402753  lat=40.1005525
+  SE (657000, 1925000)      lon=-88.2166872  lat=40.0990944
+  NE (657000, 1927000)      lon=-88.2147506  lat=40.1168851
+  NW (655000, 1927000)      lon=-88.2383444  lat=40.1183436
+
+Companion file: campus_lidar_footprint.geojson
+  -> drag into JOSM / iD editor / QGIS / geojson.io to see the exact tile.

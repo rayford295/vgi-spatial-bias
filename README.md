@@ -3,9 +3,14 @@
 Volunteered Geographic Information (VGI) such as OpenStreetMap is highly accurate where
 many people map and stale where few do. This project builds an end-to-end,
 fully reproducible pipeline that **detects** that bias with multimodal remote sensing
-(LiDAR + aerial imagery), **quantifies** it from a 2 × 2 km campus tile up to all 102
-Illinois counties, and **corrects** it — machine-proposing fixes that are validated
-against what the OSM community itself later mapped.
+(LiDAR + aerial imagery), **quantifies** it up to all 102 Illinois counties, and
+**corrects** it — machine-proposing fixes validated against what the OSM community
+itself later mapped. Two study regions anchor the method:
+
+| Study region | Tile | LiDAR | OSM 2019 completeness |
+|---|---|---|---|
+| **UIUC campus** (Urbana, IL) | 2 × 2 km | QL1, ~20 pts/m², fully classified | 58.3% count / 79.4% area |
+| **Colorado Springs** (CO) | 2 × 2 km | ~5 pts/m², ground-only classes | **29.1% count / 67.6% area** |
 
 ▶ **Run everything**: [`VGI_Spatial_Bias_Pipeline.ipynb`](VGI_Spatial_Bias_Pipeline.ipynb)
 — one notebook, all stages, pre-executed with figures, runs unmodified on the
@@ -23,6 +28,7 @@ Framing: [PROJECT_DESCRIPTION](docs/PROJECT_DESCRIPTION.md) ·
  OSM 2026          ──► 4 validate         did the community confirm our detections?
  statewide + Census──► 5 scale            urban→rural quality gradient, 102 counties
  all of the above  ──► 6 correct          propose → score → prioritize fixes
+ second region     ──► 7 generalize       repeat 1–4 on Colorado Springs, no retuning
 ```
 
 **Key findings at a glance**
@@ -34,6 +40,7 @@ Framing: [PROJECT_DESCRIPTION](docs/PROJECT_DESCRIPTION.md) ·
 | 3 | Roads: geometry fine, attributes poor | 91–99.6% pavement support vs 3.3% maxspeed tagged statewide |
 | 4 | Quality follows contributors, not need | edit recency ρ = 0.70 with pop. density; downstate frozen at 2008 (TIGER) |
 | 5 | Correction works — and hybrid wins | proposal median IoU 0.68; learned scorer precision@50 = 0.84 (base 0.65) |
+| 6 | The method generalizes | Colorado Springs, ground-only LiDAR: 74.8% of detected gaps community-confirmed |
 
 ---
 
@@ -48,9 +55,9 @@ fusing with the LiDAR footprints — the paved layer becomes the road reference.
 
 | | |
 |---|---|
-| ![buildings](results/detection/buildings_detected.png) | ![trees](results/detection/trees_detected.png) |
+| ![buildings](results/uiuc_campus/detection/buildings_detected.png) | ![trees](results/uiuc_campus/detection/trees_detected.png) |
 | **1,312 building instances** (footprint + height) | **11,777 individual trees** (height + crown) |
-| ![fulltile](results/segmentation/seg_fulltile.png) | ![naip](results/naip/naip_segmentation.png) |
+| ![fulltile](results/uiuc_campus/segmentation/seg_fulltile.png) | ![naip](results/uiuc_campus/naip/naip_segmentation.png) |
 | **DGCNN** segmentation, OA 0.930 · mIoU 0.768 | **NAIP** land cover, LiDAR-fused |
 
 ## 2 · Detecting building omissions (OSM 2019 vs RS consensus)
@@ -59,7 +66,7 @@ LiDAR footprints (corroborated by NAIP) are ground truth; the temporally matched
 OSM 2019 `building=*` snapshot is evaluated via IoU matching → completeness →
 gridded bias map:
 
-![OSM vs LiDAR comparison](results/comparison/comparison_map.png)
+![OSM vs LiDAR comparison](results/uiuc_campus/comparison/comparison_map.png)
 
 | completeness (count) | completeness (area) | OSM commission | pixel IoU (0.2 m) | Cohen κ |
 |---|---|---|---|---|
@@ -82,15 +89,15 @@ where buildings were not — and the vetted major-roads subset is **99.6% suppor
 (the all-class shortfall is canopy-shaded footways/steps). The 2019→2026 additions
 are micro-mapping (+60% segments, +8% length) and **80% of added length was already
 paved in 2019**: gap-fill again. Details and caveats:
-[results/comparison/](results/comparison/README.md).
+[results/uiuc_campus/comparison/](results/uiuc_campus/comparison/README.md).
 
 ## 4 · Statewide scaling — the urban→rural gradient
 
 The same snapshot scaled to **375,754 major-road segments (235,064 km) across all
 102 Illinois counties**, normalized with Census 2019 data:
 
-![county-level completeness and recency](results/statewide/choropleth_completeness.png)
-![completeness vs population density](results/statewide/scatter_bias.png)
+![county-level completeness and recency](results/statewide_il/choropleth_completeness.png)
+![completeness vs population density](results/statewide_il/scatter_bias.png)
 
 | metric | ρ vs pop. density | urban mean | rural mean | campus tile |
 |---|---|---|---|---|
@@ -108,7 +115,7 @@ import) while Cook/DuPage/Will sit at 2016 and the campus tile at 2018.
 *higher* rurally, ρ = −0.97): in the US, **bias lives in attributes and currency,
 not in whether the line exists**. **(3)** The gradient is not smooth — Sangamon
 County is a single-contributor hotspot (33.9% maxspeed, 3–10× any other county).
-Write-up: [results/statewide/](results/statewide/README.md).
+Write-up: [results/statewide_il/](results/statewide_il/README.md).
 
 ## 5 · Correcting the bias (propose → score → prioritize)
 
@@ -122,7 +129,7 @@ west-train / east-eval:
 | **B** learned | U-Net (NAIP + CHM) | mask probability | 0.589 | 0.695 | 0.66 |
 | **C** hybrid ⭐ | same as A | GBM acceptance scorer | 0.677 | 0.738 | **0.84** |
 
-![proposals vs community](results/correction/proposal_gallery.png)
+![proposals vs community](results/uiuc_campus/correction/proposal_gallery.png)
 
 With only 83 training gaps, **rules beat learning for geometry** (the raw LiDAR
 footprint is itself the best overlap at 0.691 — regularization trades a little IoU
@@ -130,9 +137,35 @@ for OSM-style right angles). But the **learned scorer wins the human-review queu
 84% of its top-50 proposals were later confirmed by the community (base rate 65%).
 Proposals carry OSM-ready tags (`building=yes`, `height=*`) yet remain research
 artifacts per the OSM Automated Edits Code of Conduct: the 195 outstanding proposals
-are ranked for human review (`results/correction/deployment_map.png`), and a
+are ranked for human review (`results/uiuc_campus/correction/deployment_map.png`), and a
 statewide **staleness × population-exposure** map points the pipeline at Cook, Lake
-and Winnebago first (`results/correction/deploy_priority.png`).
+and Winnebago first (`results/statewide_il/deploy_priority.png`).
+
+## 6 · Generalization — the Colorado Springs region
+
+The whole detect → validate loop repeats on a **2 × 2 km Colorado Springs
+residential tile** with deliberately harder inputs: ~5 pts/m² LiDAR carrying only
+ground/non-ground classes (no ASPRS building/vegetation), in a semi-arid landscape.
+`src/region_detection.py` replaces the missing class evidence with **NAIP NDVI +
+the multi-return echo fraction** while keeping the identical grid, morphology and
+thresholds — 2,122 buildings detected:
+
+![CS temporal evolution](results/colorado_springs/comparison/temporal/temporal_evolution.png)
+
+| | UIUC campus | Colorado Springs |
+|---|---|---|
+| OSM 2019 completeness (count / area) | 58.3% / 79.4% | **29.1% / 67.6%** |
+| gaps community-filled by 2026 | 64% | **74.8%** |
+| completeness today | 81.9% / 91.8% | 81.3% / 91.9% |
+| road length NAIP-supported | 99.6% (major) | 99.9% |
+
+The residential tile was under-mapped **twice as badly** as the campus in 2019 —
+entire subdivisions were absent — and the community has since independently
+confirmed three quarters of our detections. Road geometry is near-perfect in both
+regions: across two very different landscapes, the bias lives in buildings and
+attributes, not the road network. (Semi-arid caveat: dry ground depresses NDVI and
+inflates the NAIP impervious class, so the *reverse* explained-paved metric is not
+comparable across regions; forward road support is unaffected.)
 
 ---
 
@@ -147,15 +180,21 @@ Or run the scripts directly (in order — later stages reuse earlier outputs):
 
 ```bash
 python src/prepare_data.py           # fetch LiDAR + NAIP + statewide inputs (idempotent)
-python src/classical_detection.py    # ground/DTM, buildings, trees   -> results/detection/
-python src/dgcnn_semseg.py           # semantic segmentation          -> results/segmentation/
-python src/naip_segmentation.py data/NAIP_image.tif            # land cover -> results/naip/
-python src/vgi_comparison.py data/osm_buildings_2019.geojson   # bias map -> results/comparison/
-python src/statewide_bias.py data/statewide/OSM_2019_Major_Roads/gis_osm_roads_2019_IL_Major_Roads.shp \
-       data/statewide results/statewide                        # county gradient
+python src/classical_detection.py    # ground/DTM, buildings, trees   -> results/uiuc_campus/detection/
+python src/dgcnn_semseg.py           # semantic segmentation          -> results/uiuc_campus/segmentation/
+python src/naip_segmentation.py data/uiuc_campus/NAIP_image.tif            # land cover -> results/uiuc_campus/naip/
+python src/vgi_comparison.py data/uiuc_campus/osm_buildings_2019.geojson   # bias map -> results/uiuc_campus/comparison/
+python src/statewide_bias.py data/statewide_il/OSM_2019_Major_Roads/gis_osm_roads_2019_IL_Major_Roads.shp \
+       data/statewide_il results/statewide_il                        # county gradient
 python src/propose_geometry.py && python src/acceptance_scorer.py && \
        python src/propose_learned.py && python src/correction_benchmark.py && \
-       python src/deploy_priority.py                           # correction -> results/correction/
+       python src/deploy_priority.py                           # correction -> results/uiuc_campus/correction/
+# second region (Colorado Springs) — same pipeline, explicit region paths:
+python src/prepare_data.py colorado
+python src/region_detection.py data/colorado_springs/cs_lidar_2km.laz \
+       data/colorado_springs/naip_cs_6350.tif results/colorado_springs/detection
+python src/vgi_comparison.py data/colorado_springs/osm_buildings_2019_cs.geojson \
+       results/colorado_springs/comparison results/colorado_springs/detection/buildings.geojson
 ```
 
 Device auto-selects CUDA → Apple MPS → CPU; a full campus run takes ≈ 15–25 min
@@ -178,18 +217,34 @@ platform specifics:
 
 ## Repository layout
 
+Everything is organized by study region — `data/` and `results/` mirror each other:
+
 ```
 VGI_Spatial_Bias_Pipeline.ipynb    end-to-end reproducible notebook (all stages, I-GUIDE-ready)
-src/                               pipeline scripts (data prep, detection, segmentation,
-                                   comparison, statewide, correction)
-data/                              OSM 2019/2026 campus subsets + CRS/bbox metadata
-docs/                              PROJECT_DESCRIPTION · METHODOLOGY · METRICS · specs
-results/                           detection/ · segmentation/ · comparison/ · naip/ ·
-                                   statewide/ · correction/
+src/                               pipeline scripts (region-agnostic; defaults = UIUC campus)
+  prepare_data.py                    fetch every external input (lidar|naip|statewide|colorado)
+  classical_detection.py             UIUC detection (uses ASPRS classes)
+  region_detection.py                detection for minimally-classified LiDAR (NDVI+echo)
+  dgcnn_semseg.py · pointnet_semseg.py   deep-learning segmentation
+  naip_segmentation.py               optical land cover + paved layer
+  vgi_comparison.py · pixel_comparison.py · temporal_validation.py    buildings
+  road_comparison.py · road_evolution.py · major_roads_analysis.py    roads
+  statewide_bias.py                  102-county gradient
+  propose_geometry.py · propose_learned.py · acceptance_scorer.py
+  correction_benchmark.py · deploy_priority.py                        correction
+data/
+  uiuc_campus/                     OSM 2019/2026 subsets · metadata · [LiDAR/NAIP, fetched]
+  colorado_springs/                boundary · OSM 2019/2026 clips · [LiDAR/NAIP, fetched]
+  statewide_il/                    [statewide OSM + Census files, fetched]
+docs/                              PROJECT_DESCRIPTION · METHODOLOGY · METRICS · design specs
+results/
+  uiuc_campus/                     detection/ · segmentation/ · naip/ · comparison/ · correction/
+  colorado_springs/                detection/ · naip/ · comparison/
+  statewide_il/                    county gradient + deployment priority
 ```
 
-Large / regenerable artifacts (`.laz`, `.tif`, caches, downloads) are gitignored —
-the notebook fetches the point cloud from I-GUIDE storage and recreates the rest.
+Bracketed items are heavy inputs: gitignored locally, hosted on the GitHub releases /
+I-GUIDE storage, and staged by `python src/prepare_data.py` (idempotent).
 
 ## Data sources
 
@@ -203,6 +258,9 @@ the notebook fetches the point cloud from I-GUIDE storage and recreates the rest
   OSM 2026 snapshots committed in `data/`. © OpenStreetMap contributors (ODbL).
 - **Census 2019** — county land area, population estimates and cartographic
   boundaries (public census.gov static files).
+- **Colorado Springs** — merged LiDAR (LAZ), clipped + original NAIP, and the full
+  source bundle (raw tiles + statewide Colorado OSM extracts) on the
+  [`colorado-springs-2019` release](https://github.com/rayford295/vgi-spatial-bias/releases/tag/colorado-springs-2019).
 
 ## License
 

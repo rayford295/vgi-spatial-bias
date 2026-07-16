@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "comparison", "temporal"); os.makedirs(OUT, exist_ok=True)
-PAVED = os.path.join(ROOT, "results", "naip", "naip_paved.tif")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "comparison", "temporal"); os.makedirs(OUT, exist_ok=True)
+PAVED = os.path.join(ROOT, "results", "uiuc_campus", "naip", "naip_paved.tif")
 MATCH_TOL = 5.0        # m, buffer around the 2019 network for "existed in 2019"
 MATCH_FRAC = 0.5       # min fraction of a way's length inside that buffer
 SUPPORT_THR = 0.5      # min 2019-paved fraction to call an added way "paved in 2019"
@@ -59,8 +59,8 @@ def union_all(gdf):
     (the I-GUIDE CyberGISX kernel ships Python 3.8 / geopandas <= 0.13)."""
     return gdf.union_all() if hasattr(gdf, "union_all") else gdf.unary_union
 
-g19 = load(os.path.join(ROOT, "data", "osm_roads_2019.geojson"))
-g26 = load(os.path.join(ROOT, "data", "osm_roads_2026.geojson"))
+g19 = load(os.path.join(ROOT, "data", "uiuc_campus", "osm_roads_2019.geojson"))
+g26 = load(os.path.join(ROOT, "data", "uiuc_campus", "osm_roads_2026.geojson"))
 net19 = union_all(g19).buffer(MATCH_TOL)
 net26 = union_all(g26).buffer(MATCH_TOL)
 

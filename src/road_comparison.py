@@ -25,8 +25,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "comparison", "roads"); os.makedirs(OUT, exist_ok=True)
-PAVED = os.path.join(ROOT, "results", "naip", "naip_paved.tif")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "comparison", "roads"); os.makedirs(OUT, exist_ok=True)
+PAVED = os.path.join(ROOT, "results", "uiuc_campus", "naip", "naip_paved.tif")
 SUPPORT_THR = 0.5          # min paved fraction in buffer to call a segment "supported"
 TOL = 1.5                  # m, extra buffer for positional tolerance in the reverse test
 WIDTH = {"motorway": 15, "trunk": 14, "primary": 12, "secondary": 10, "tertiary": 9,
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         init(sys.argv[1], sys.argv[2])
         runs = dict(a.split("=", 1) for a in sys.argv[3:])
     else:
-        runs = {y: os.path.join(ROOT, "data", f"osm_roads_{y}.geojson")
+        runs = {y: os.path.join(ROOT, "data", "uiuc_campus", f"osm_roads_{y}.geojson")
                 for y in ("2019", "2026")}
     out = {tag: analyse(tag, path) for tag, path in runs.items()}
     json.dump(out, open(os.path.join(OUT, "roads_summary.json"), "w"), indent=2)

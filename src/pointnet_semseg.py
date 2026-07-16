@@ -19,10 +19,10 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, "UIUC_campus_LiDAR_merged_2x2km.laz")
-OUT = os.path.join(ROOT, "results", "segmentation"); os.makedirs(OUT, exist_ok=True)
+SRC = os.path.join(ROOT, "data", "uiuc_campus", "UIUC_campus_LiDAR_merged_2x2km.laz")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "segmentation"); os.makedirs(OUT, exist_ok=True)
 CACHE = os.path.join(OUT, "dl_cache.npz")
-DTM_TIF = os.path.join(ROOT, "results", "detection", "dtm.tif")  # from classical_detection.py
+DTM_TIF = os.path.join(ROOT, "results", "uiuc_campus", "detection", "dtm.tif")  # from classical_detection.py
 RES = 0.5; BLOCK = 40.0; NPTS = 4096
 CLASS_MAP = {2:0, 3:1, 4:2, 5:3, 6:4}
 NAMES = ["Ground", "Low Veg", "Med Veg", "High Veg", "Building"]

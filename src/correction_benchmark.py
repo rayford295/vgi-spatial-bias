@@ -29,7 +29,7 @@ import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "correction")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "correction")
 CRS = 6350
 C_RULE, C_LEARN, C_TRUTH, C_RAW = "#2a78d6", "#eb6834", "#008300", "#b0aea5"
 
@@ -129,7 +129,7 @@ def main():
 
     # ---- figure 2: deployment map (still-unmapped, ranked) ---------------
     todo = gaps[~gaps.filled].merge(scores[["gap_id", "gbm_prob"]], on="gap_id")
-    o19 = gpd.read_file(os.path.join(ROOT, "data",
+    o19 = gpd.read_file(os.path.join(ROOT, "data", "uiuc_campus",
                                      "osm_buildings_2019.geojson")).to_crs(CRS)
     fig, ax = plt.subplots(figsize=(10, 10))
     o19.plot(ax=ax, color="#e8e6dc")

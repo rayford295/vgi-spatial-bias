@@ -36,7 +36,7 @@ from shapely.geometry import shape as shp_shape
 from propose_geometry import largest_part, regularize
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "results", "correction")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "correction")
 CRS, PATCH, RES = 6350, 128, 0.5          # 128 px @ 0.5 m = 64 m patches
 EPOCHS = int(sys.argv[1]) if len(sys.argv) > 1 else 40
 DEV = ("cuda" if torch.cuda.is_available() else
@@ -47,10 +47,10 @@ np.random.seed(42)
 
 def load_stack():
     """NAIP (RGBN) warped onto the CHM grid + CHM -> (5, H, W) float32."""
-    chm_src = rasterio.open(os.path.join(ROOT, "results", "detection", "chm.tif"))
+    chm_src = rasterio.open(os.path.join(ROOT, "results", "uiuc_campus", "detection", "chm.tif"))
     chm = chm_src.read(1).astype("float32")
     chm = np.nan_to_num(chm, nan=0.0).clip(0, 30) / 30.0
-    with rasterio.open(os.path.join(ROOT, "data", "NAIP_image.tif")) as naip:
+    with rasterio.open(os.path.join(ROOT, "data", "uiuc_campus", "NAIP_image.tif")) as naip:
         with WarpedVRT(naip, crs=chm_src.crs, transform=chm_src.transform,
                        width=chm_src.width, height=chm_src.height,
                        resampling=Resampling.bilinear) as vrt:
@@ -90,7 +90,7 @@ def patch_window(src, cx, cy):
 def main():
     stack, chm_src = load_stack()
     gaps = gpd.read_file(os.path.join(OUT, "gaps_labeled.geojson")).to_crs(CRS)
-    o26 = gpd.read_file(os.path.join(ROOT, "data",
+    o26 = gpd.read_file(os.path.join(ROOT, "data", "uiuc_campus",
                                      "osm_buildings_2026.geojson")).to_crs(CRS)
     o26["geometry"] = o26.geometry.buffer(0)
     labels = rasterize(((g, 1) for g in o26.geometry if not g.is_empty),

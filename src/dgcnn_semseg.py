@@ -23,8 +23,8 @@ from matplotlib.colors import ListedColormap
 from matplotlib.patches import Patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, "UIUC_campus_LiDAR_merged_2x2km.laz")
-OUT = os.path.join(ROOT, "results", "segmentation"); os.makedirs(OUT, exist_ok=True)
+SRC = os.path.join(ROOT, "data", "uiuc_campus", "UIUC_campus_LiDAR_merged_2x2km.laz")
+OUT = os.path.join(ROOT, "results", "uiuc_campus", "segmentation"); os.makedirs(OUT, exist_ok=True)
 CACHE = os.path.join(OUT, "dl_cache.npz")
 RES, BLOCK, NPTS, K = 0.5, 40.0, 2048, 16
 CLASS_MAP = {2:0, 3:1, 4:2, 5:3, 6:4}
