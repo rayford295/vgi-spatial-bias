@@ -61,6 +61,13 @@ h1 em{font-style:italic;color:var(--accent)}
 .btn.primary:hover{background:var(--accent);border-color:var(--accent)}
 .btn:not(.primary):hover{border-color:var(--accent);color:var(--accent)}
 
+.vco{display:inline-flex;flex-wrap:wrap;align-items:center;gap:12px;margin:26px 0 -6px;padding:10px 16px 10px 10px;
+     border:1px solid var(--accent);border-radius:3px;font-size:14px;color:var(--ink-soft);background:var(--card)}
+.vco:hover{text-decoration:none;color:var(--ink);box-shadow:0 2px 14px rgba(0,0,0,.08)}
+.vco b{color:var(--ink)}
+.vco-tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+     background:var(--accent);color:var(--paper);padding:4px 8px;border-radius:2px}
+
 /* stat band */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
        border:1px solid var(--line);margin:64px 0 0}
@@ -159,6 +166,10 @@ body.js .reveal.in{opacity:1;transform:none}
 
 <header>
   <div class="kicker">I-GUIDE Summer School 2026 · Research Project</div>
+  <a class="vco" href="https://illinois.zoom.us/meeting/register/JkvSicIHQDiJr7Rvl7WuRA">
+    <span class="vco-tag">Live talk</span>
+    <span>I-GUIDE VCO · <b>September 23, 2026 · 11:00 am Central</b> — the team presents this work. Register to attend →</span>
+  </a>
   <h1>The map is not the territory — <em>and we can measure the gap.</em></h1>
   <p class="lede">
     OpenStreetMap is superb where many people map and stale where few do. This project
