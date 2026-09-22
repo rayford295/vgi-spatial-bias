@@ -43,36 +43,21 @@ This repository detects that bias with LiDAR + aerial imagery, quantifies it acr
 
 ## At a glance
 
-<table>
-<tr>
-<td width="50%" valign="top">
+| Stage | What happens | Inputs |
+|:-:|---|---|
+| 1 | **Build** an objective remote-sensing reference: buildings, trees, DTM, paved surface | USGS 3DEP LiDAR · NAIP imagery |
+| 2 | **Detect** where OpenStreetMap under-maps buildings and roads, and map the bias | OSM 2019 vs the reference |
+| 3 | **Validate** every detection against what the community mapped seven years later | OSM 2026 |
+| 4 | **Scale** to an urban → rural quality gradient across 102 Illinois counties | statewide OSM · Census 2019 |
+| 5 | **Correct** the gaps: propose → score → prioritize OSM-ready fixes | community-confirmed gaps as free labels |
+| 6 | **Generalize** to a second region with harder data and no retuning | Colorado Springs, ground-only LiDAR |
 
-**What it does**
-
-1. Builds an objective **remote-sensing reference** from USGS 3DEP LiDAR and NAIP imagery.
-2. **Detects** where OpenStreetMap under-maps buildings and roads, and maps the bias.
-3. **Validates** every detection against what the OSM community mapped seven years later.
-4. **Scales** the analysis to a 102-county urban → rural gradient.
-5. **Corrects** the gaps: propose → score → prioritize OSM-ready fixes.
-6. **Generalizes** to a second region with harder data and no retuning.
-
-</td>
-<td width="50%" valign="top">
-
-**Two study regions**
-
-| | UIUC campus (IL) | Colorado Springs (CO) |
-|---|---|---|
-| Tile | 2 × 2 km | 2 × 2 km |
-| LiDAR | QL1 ~20 pts/m², fully classified | ~5 pts/m², ground-only |
-| OSM 2019 completeness | 58.3% count / 79.4% area | **29.1% / 67.6%** |
-| Gaps community-filled by 2026 | 64% | **74.8%** |
+| Study region | Tile | LiDAR | OSM 2019 completeness | Gaps community-filled by 2026 |
+|---|---|---|---|---|
+| **UIUC campus** (Urbana, IL) | 2 × 2 km | QL1 ~20 pts/m², fully classified | 58.3% count / 79.4% area | 64% |
+| **Colorado Springs** (CO) | 2 × 2 km | ~5 pts/m², ground-only classes | **29.1% / 67.6%** | **74.8%** |
 
 Everything is reproducible from one notebook that runs unmodified on the [I-GUIDE JupyterHub](https://platform.i-guide.io).
-
-</td>
-</tr>
-</table>
 
 <p align="center">
   <a href="results/uiuc_campus/comparison/comparison_map.png"><img src="docs/assets/uiuc_comparison.jpg" alt="OSM 2019 vs LiDAR building comparison over the UIUC campus tile" width="920"></a><br>
